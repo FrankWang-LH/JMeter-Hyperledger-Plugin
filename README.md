@@ -1,5 +1,8 @@
 This plugin adds Hyperledger Fabric blockchain & DApp testing capabilities to Apache JMeter. By using this plugin, you can perform performance testing on potentially any smart contract deployed on Hyperledger Fabric networks.
 
+## Attribution
+This work is inspired by Dr Dilum Bandara at CSIRO's data61.
+
 ## Public Release: 1.6-stable
 Last updated April 2021.
 
