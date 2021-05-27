@@ -3,7 +3,7 @@ This plugin adds Hyperledger Fabric blockchain & DApp testing capabilities to Ap
 ## Attribution
 This work is inspired by Dr Dilum Bandara at CSIRO's data61.
 
-## Public Release: 1.6-stable
+## Public Release: 1.0
 Last updated April 2021.
 
 ## Configure Hyperledger Connection and Wallet files for blockchain testing
