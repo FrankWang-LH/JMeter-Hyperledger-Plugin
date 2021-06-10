@@ -1,6 +1,16 @@
 import com.alibaba.fastjson.annotation.JSONField;
 
+/**
+ * Hyperledger Fabric ERC20 Token Smart Contract JSON object for DApp testing
+ *
+ * @author  Zhenqi Wang <z5141545@student.unsw.edu.au>
+ * @since   December 2020
+ */
+
 public class ERCjson {
+    /**
+     * List of attributes to be used
+     */ 
     @JSONField(name = "id", ordinal = 1)
     private final String id;
     @JSONField(name = "id_to", ordinal = 2)

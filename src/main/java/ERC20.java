@@ -4,6 +4,13 @@ import org.hyperledger.fabric.gateway.Network;
 
 import java.util.concurrent.TimeoutException;
 
+/**
+ * Hyperledger Fabric ERC20 Token Smart Contract
+ *
+ * @author  Zhenqi Wang <z5141545@student.unsw.edu.au>
+ * @since   December 2020
+ */
+
 public class ERC20 implements SmartContract {
     private static String contractName = "token-erc20";
     private static String create = "Transfer";
@@ -18,6 +25,12 @@ public class ERC20 implements SmartContract {
     private static final String totalSupply = "TotalSupply";
     private final Network network;
 
+    /**
+     * Constructor
+     *
+     * @param network       HLF Gateway Network object
+     * @param init          whether to initialise the ledger
+     */ 
     public ERC20(Network network, boolean init) {
         this.network = network;
         if(init) {
@@ -29,6 +42,15 @@ public class ERC20 implements SmartContract {
         }
     }
 
+    /**
+     * Constructor - with contract options passed in as string
+     *
+     * @param network           HLF Gateway Network object
+     * @param createContract    'create' contract name
+     * @param checkContract     'check' contract name
+     * @param updateContract    'update' contract name
+     * @param deleteContract    'delete' contract name
+     */ 
     public ERC20(String contractName, String createContract, String checkContract, String updateContract, String deleteContract, Network network) {
         ERC20.contractName = contractName;
         ERC20.create= createContract;
@@ -38,6 +60,10 @@ public class ERC20 implements SmartContract {
         this.network = network;
     }
 
+    /**
+     * Initialise the ledger with desired operations
+     *
+     */ 
     @Override
     public void initLedger() throws InterruptedException, TimeoutException, ContractException {
         Contract contract = network.getContract(contractName);
@@ -51,6 +77,13 @@ public class ERC20 implements SmartContract {
         System.out.println("Issued 20000 tokens to admin 2 "+ new String(result_q3));
     }
 
+    /**
+     * {@inheritDoc}
+     * An "Invoke" type contract, in ERC-20 being transfer from minter to client
+     * 
+     * @param args          List of arguments
+     * @return              A Message object conatining all relevant information from the transaction
+     */ 
     @Override
     public Message invoke(String[] args) throws InterruptedException, TimeoutException, ContractException {
         Contract contract = network.getContract(contractName);
@@ -83,6 +116,13 @@ public class ERC20 implements SmartContract {
         return new Message(200, "Transfer to client successful" ,message);
     }
 
+    /**
+     * {@inheritDoc}
+     * A "Read" type contract, in ERC-20 being check client balance given client ID
+     * 
+     * @param args          List of arguments
+     * @return              A Message object conatining all relevant information from the transaction
+     */ 
     @Override
     public Message read(String[] args) throws InterruptedException, TimeoutException, ContractException {
         Contract contract = network.getContract(contractName);
@@ -98,6 +138,13 @@ public class ERC20 implements SmartContract {
         return new Message(200, message ,"Balance of account " + id + ": " + output);
     }
 
+    /**
+     * {@inheritDoc}
+     * An "Update" type contract, in ERC-20 being transfer from client to client
+     * 
+     * @param args          List of arguments
+     * @return              A Message object conatining all relevant information from the transaction
+     */ 
     @Override
     public Message update(String[] args) throws InterruptedException, TimeoutException, ContractException {
         Contract contract = network.getContract(contractName);
@@ -145,15 +192,28 @@ public class ERC20 implements SmartContract {
         return new Message(200, response_message ,message);
     }
 
+    /**
+     * {@inheritDoc}
+     * An "Delete" type contract, not used in ERC-20
+     * 
+     * @param args          List of arguments
+     * @return              A Message object conatining all relevant information from the transaction
+     */ 
     @Override
     public Message delete(String[] args) throws InterruptedException, TimeoutException, ContractException {
         return new Message(404, "NO DELETE ENDPOINT FOR THIS SMART CONTRACT." , null);
     }
 
+
     private boolean sumAssertion(int a, int b, int c){
         return Math.abs(a - b - c) < 10 * b + 10000;
     }
 
+    /**
+     * Return clientAccountID as a string
+     * 
+     * @return              String object of clientAccountID
+     */ 
     public String clientAccountID() {
         try {
             Contract contract = network.getContract(contractName);
@@ -164,6 +224,12 @@ public class ERC20 implements SmartContract {
         }
     }
 
+    /**
+     * Mint a given number of tokens into the ledger
+     * 
+     * @param args          List of arguments
+     * @return              A Message object conatining all relevant information from the transaction
+     */ 
     public Message mint(String args[]) {
         if(args.length < 3) return new Message(400, "BAD REQUEST MISSING ARGUMENTS","");
         String value = args[2];
@@ -177,6 +243,12 @@ public class ERC20 implements SmartContract {
         }
     }
 
+    /**
+     * Return the number of tokens allowed to spend given user id
+     * 
+     * @param args          List of arguments
+     * @return              A Message object conatining all relevant information from the transaction
+     */ 
     public Message allowance(String args[]) {
         if(args.length < 2) return new Message(400, "BAD REQUEST MISSING ARGUMENTS","");
         String owner = args[0];
@@ -192,6 +264,12 @@ public class ERC20 implements SmartContract {
         }
     }
 
+    /**
+     * Seek approval to spend a number of tokens given user id and amount of tokens
+     * 
+     * @param args          List of arguments
+     * @return              A Message object conatining all relevant information from the transaction
+     */ 
     public Message approve(String args[]) {
         if(args.length < 3) return new Message(400, "BAD REQUEST MISSING ARGUMENTS","");
         String spender = args[0];
@@ -207,6 +285,11 @@ public class ERC20 implements SmartContract {
         }
     }
 
+    /**
+     * Return the total amount of tokens in the current client's account
+     * 
+     * @return              client balance as an Integer
+     */ 
     public Integer clientAccountBalance() {
         try {
             Contract contract = network.getContract(contractName);
@@ -217,6 +300,11 @@ public class ERC20 implements SmartContract {
         }
     }
 
+    /**
+     * Return the total amount of tokens in the ledger.
+     * 
+     * @return              TotalSupply as an Integer
+     */ 
     public Integer totalSupply() {
         try {
             Contract contract = network.getContract(contractName);
@@ -227,6 +315,10 @@ public class ERC20 implements SmartContract {
         }
     }
 
+    /**
+     * It's a cheat for testing, dump all tokens that is owned by users involved in testing, to a "dump" account
+     * 
+     */
     public void dump(String[] args){
         try {
             Contract contract = network.getContract(contractName);
@@ -260,6 +352,10 @@ public class ERC20 implements SmartContract {
         }
     }
 
+    /**
+     * Burn a number of tokens given amount (minter ID only)
+     * 
+     */ 
     public void burn(String[] args){
         try {
             Contract contract = network.getContract(contractName);
